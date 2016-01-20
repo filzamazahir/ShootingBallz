@@ -10,9 +10,8 @@ import UIKit
 import SpriteKit
 
 class GameViewController: UIViewController {
-
     
-    var socket: SocketIOClient?
+    var currentPlayer: String?
     
     override func viewDidLoad() {
         
@@ -21,6 +20,9 @@ class GameViewController: UIViewController {
         super.viewDidLoad()
 
         if let scene = GameScene(fileNamed:"GameScene") {
+            
+            print("In Game View Controller: \(currentPlayer)")
+            
             // Configure the view.
             let skView = self.view as! SKView
             skView.showsFPS = true
@@ -29,9 +31,11 @@ class GameViewController: UIViewController {
             /* Sprite Kit applies additional optimizations to improve rendering performance */
             skView.ignoresSiblingOrder = true
             
+            
+            
             /* Set the scale mode to scale to fit the window */
+            scene.currentPlayer = self.currentPlayer
             scene.scaleMode = .AspectFill
-            scene.socket = socket
             skView.presentScene(scene)
         }
     }

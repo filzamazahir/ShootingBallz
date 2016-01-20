@@ -11,6 +11,7 @@ import SpriteKit
 class GameScene: SKScene {
     
     var socket: SocketIOClient?
+    var currentPlayer: String?
     
     var playerOne: Player?, playerTwo: Player?, playerThree: Player?, playerFour: Player?
     var score: Int = 0
@@ -22,9 +23,44 @@ class GameScene: SKScene {
         myLabel.fontSize = 45
         myLabel.position = CGPoint(x:CGRectGetMidX(self.frame), y:CGRectGetMidY(self.frame))
         
+        socket = SocketIOClient(socketURL: "http://localhost:5000")
+        // http://192.168.1.42:5000
+        socket?.connect()
+        
+        socket?.on("connect") { data, ack in
+            print("iOS::WE ARE USING SOCKETS!")
+            
+            self.socket?.emit("newUserConnected", self.currentPlayer!)
+        }
+        
+        
+        socket!.on("newUserJoinedServer") { data, ack in
+            
+            print("user joined in Game Scene: \(data)")
+            
+            if self.playerOne == nil {
+                self.createPlayerOneLabel(data[0] as! String)
+            }
+            else if self.playerOne != nil && self.playerTwo == nil {
+                // create Player Two Label
+            }
+            
+            else if self.playerOne != nil && self.playerTwo != nil && self.playerThree == nil{
+                // create Player Three Label
+            }
+            
+            else if self.playerOne != nil && self.playerTwo != nil && self.playerThree != nil && self.playerFour == nil{
+                // create Player Four Label
+            }
+            
+            
+        }
+        
+        
         self.addChild(myLabel)
         
-        createPlayerOneLabel()
+        
+        
     }
     
     override func touchesBegan(touches: Set<UITouch>, withEvent event: UIEvent?) {
@@ -62,8 +98,8 @@ class GameScene: SKScene {
         /* Called before each frame is rendered */
     }
     
-    func createPlayerOneLabel() {
-        playerOne = Player(playerName: "Player 1")
+    func createPlayerOneLabel(name: String) {
+        playerOne = Player(playerName: name)
         let playerOneScoreLabel = SKLabelNode(fontNamed: "Courier")
         playerOneScoreLabel.name = "playerOne"
         playerOneScoreLabel.fontSize = 25

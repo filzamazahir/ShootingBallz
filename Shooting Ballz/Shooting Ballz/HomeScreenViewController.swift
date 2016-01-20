@@ -10,31 +10,27 @@ import UIKit
 
 class HomeScreenViewController: UIViewController {
     
-    var socket: SocketIOClient?
 
     @IBOutlet weak var nameTextField: UITextField!
     
+    //Create a socket connection when Start Game is pressed
     @IBAction func startGameButtonPressed(sender: UIButton) {
-        
-        socket = SocketIOClient(socketURL: "http://localhost:5000")
-        // http://192.168.1.42:5000
-        socket?.connect()
-        
-        socket?.on("connect") { data, ack in
-            print("iOS::WE ARE USING SOCKETS!")
-            
-            self.socket?.emit("newUserConnected", self.nameTextField.text!)
-        }
-
         
     }
     
+    //To hide keyboard when you press return
+    func textFieldShouldReturn(textField: UITextField) -> Bool {
+        self.view.endEditing(true)
+        return true
+    }
+    
+    //Pass the socket to Game View Controller
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
         
         if segue.identifier == "StartGame"{
         
             let gameViewController = segue.destinationViewController as! GameViewController
-            gameViewController.socket = socket
+            gameViewController.currentPlayer = self.nameTextField.text!
         }
     }
     
