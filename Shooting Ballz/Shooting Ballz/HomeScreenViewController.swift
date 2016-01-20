@@ -16,7 +16,8 @@ class HomeScreenViewController: UIViewController {
     
     @IBAction func startGameButtonPressed(sender: UIButton) {
         
-        socket = SocketIOClient(socketURL: "http://192.168.1.42:5000")
+        socket = SocketIOClient(socketURL: "http://localhost:5000")
+        // http://192.168.1.42:5000
         socket?.connect()
         
         socket?.on("connect") { data, ack in
