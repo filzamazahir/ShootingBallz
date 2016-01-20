@@ -12,7 +12,6 @@ class GameScene: SKScene {
     
     var socket: SocketIOClient?
     
-    //    var controller = GameViewController()
     var playerOne: Player?, playerTwo: Player?, playerThree: Player?, playerFour: Player?
     var score: Int = 0
     
@@ -24,10 +23,6 @@ class GameScene: SKScene {
         myLabel.position = CGPoint(x:CGRectGetMidX(self.frame), y:CGRectGetMidY(self.frame))
         
         self.addChild(myLabel)
-        
-        socket?.on("newUserJoinedServer") { data, ack in
-            print("in game scene \(data)")
-        }
         
         createPlayerOneLabel()
     }
@@ -54,13 +49,14 @@ class GameScene: SKScene {
             print("player three:", playerThree?.playerName)
             print("player four:", playerFour?.playerName)
             
-            increasePlayerScore(10)
+            if let playerOneName = playerOne?.playerName {
+                increasePlayerScore(playerOneName, points: 10)
+            }
+            
             
             //            controller.increasePlayerOneScore()
         }
     }
-    
-    
     
     override func update(currentTime: CFTimeInterval) {
         /* Called before each frame is rendered */
@@ -99,15 +95,18 @@ class GameScene: SKScene {
         addChild(playerTwoScoreLabel)
     }
     
-    func increasePlayerScore(points: Int) {
+    func increasePlayerScore(name: String, points: Int) {
         self.score += points
         
-        let score = self.childNodeWithName("playerOne") as! SKLabelNode
+        if name == "Player 1" {
+            let score = self.childNodeWithName("playerOne") as! SKLabelNode
+            
+            print("Score variable", score)
+            
+            if let playerOneName = playerOne?.playerName {
+                score.text = String(format: "\(playerOneName): %04u", self.score)
+            }
+        } // End of if
         
-        print("Score variable", score)
-        
-        if let playerOneName = playerOne?.playerName {
-            score.text = String(format: "\(playerOneName): %04u", self.score)
-        }
     }
 }
