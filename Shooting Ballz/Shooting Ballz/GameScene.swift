@@ -23,8 +23,8 @@ class GameScene: SKScene {
         myLabel.fontSize = 45
         myLabel.position = CGPoint(x:CGRectGetMidX(self.frame), y:CGRectGetMidY(self.frame))
         
-        socket = SocketIOClient(socketURL: "http://localhost:5000")
-        // http://192.168.1.42:5000
+        socket = SocketIOClient(socketURL: "http://192.168.1.42:5000")
+        // http://192.168.1.42
         socket?.connect()
         
         socket?.on("connect") { data, ack in
@@ -42,7 +42,8 @@ class GameScene: SKScene {
                 self.createPlayerOneLabel(data[0] as! String)
             }
             else if self.playerOne != nil && self.playerTwo == nil {
-                // create Player Two Label
+                self.createPlayerTwoLabel(data[0] as! String)
+
             }
             
             else if self.playerOne != nil && self.playerTwo != nil && self.playerThree == nil{
@@ -115,13 +116,13 @@ class GameScene: SKScene {
     }
     
     
-    func createPlayerTwoLabel() {
-        playerTwo = Player(playerName: "Player 2")
+    func createPlayerTwoLabel(name: String) {
+        playerTwo = Player(playerName: name)
         let playerTwoScoreLabel = SKLabelNode(fontNamed: "Courier")
-        playerTwoScoreLabel.name = "playerOne"
+        playerTwoScoreLabel.name = "playerTwo"
         playerTwoScoreLabel.fontSize = 25
-        if let playerOneName = playerTwo?.playerName {
-            playerTwoScoreLabel.text = String(format: "\(playerOneName): %04u", 0)
+        if let playerTwoName = playerTwo?.playerName {
+            playerTwoScoreLabel.text = String(format: "\(playerTwoName): %04u", 0)
         }
         
         playerTwoScoreLabel.horizontalAlignmentMode = .Left
