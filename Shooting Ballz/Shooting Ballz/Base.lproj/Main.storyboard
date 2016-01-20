@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="9531" systemVersion="15C50" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="gpa-AW-dG7">
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="9529"/>
+        <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
+    </dependencies>
+    <scenes>
+        <!--Home Screen View Controller-->
+        <scene sceneID="QVl-q1-Kmr">
+            <objects>
+                <viewController id="gpa-AW-dG7" userLabel="Home Screen View Controller" customClass="HomeScreenViewController" customModule="Shooting_Ballz" customModuleProvider="target" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="lki-4Q-yhA"/>
+                        <viewControllerLayoutGuide type="bottom" id="JSq-sI-Cjw"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="Im6-t5-G2K">
+                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Your Name" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Agc-AD-d1p">
+                                <rect key="frame" x="258" y="248" width="84" height="21"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" horizontalHuggingPriority="249" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="zZA-4x-TlC">
+                                <rect key="frame" x="36" y="285" width="528" height="30"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                <textInputTraits key="textInputTraits"/>
+                            </textField>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="3pl-NM-UvG">
+                                <rect key="frame" x="261" y="554" width="78" height="30"/>
+                                <state key="normal" title="Start Game"/>
+                                <connections>
+                                    <action selector="startGameButtonPressed:" destination="gpa-AW-dG7" eventType="touchUpInside" id="rsq-fa-nT8"/>
+                                    <segue destination="BV1-FR-VrT" kind="show" identifier="StartGame" id="fmT-Hz-E4U"/>
+                                </connections>
+                            </button>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstItem="JSq-sI-Cjw" firstAttribute="top" secondItem="3pl-NM-UvG" secondAttribute="bottom" constant="16" id="6sA-1d-PRW"/>
+                            <constraint firstItem="zZA-4x-TlC" firstAttribute="top" secondItem="Agc-AD-d1p" secondAttribute="bottom" constant="16" id="HJs-io-hb2"/>
+                            <constraint firstItem="3pl-NM-UvG" firstAttribute="centerX" secondItem="Im6-t5-G2K" secondAttribute="centerX" id="Md8-AQ-Dlt"/>
+                            <constraint firstAttribute="trailingMargin" secondItem="zZA-4x-TlC" secondAttribute="trailing" constant="16" id="b6k-Da-x2Z"/>
+                            <constraint firstItem="zZA-4x-TlC" firstAttribute="centerX" secondItem="Im6-t5-G2K" secondAttribute="centerX" id="eGo-J2-V1a"/>
+                            <constraint firstItem="Agc-AD-d1p" firstAttribute="centerX" secondItem="Im6-t5-G2K" secondAttribute="centerX" id="pGA-9Z-GsJ"/>
+                            <constraint firstItem="zZA-4x-TlC" firstAttribute="centerY" secondItem="Im6-t5-G2K" secondAttribute="centerY" id="qNb-0z-I9h"/>
+                            <constraint firstItem="zZA-4x-TlC" firstAttribute="leading" secondItem="Im6-t5-G2K" secondAttribute="leadingMargin" constant="16" id="xAW-MC-ptZ"/>
+                        </constraints>
+                    </view>
+                    <connections>
+                        <outlet property="nameTextField" destination="zZA-4x-TlC" id="aLt-1X-RSE"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="DIJ-IM-b5g" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-509" y="290"/>
+        </scene>
+        <!--Game View Controller-->
+        <scene sceneID="tXr-a1-R10">
+            <objects>
+                <viewController id="BV1-FR-VrT" customClass="GameViewController" customModule="Shooting_Ballz" customModuleProvider="target" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="8aa-yV-Osq"/>
+                        <viewControllerLayoutGuide type="bottom" id="qHh-Mt-9TT"/>
+                    </layoutGuides>
+                    <view key="view" multipleTouchEnabled="YES" contentMode="scaleToFill" id="3se-qz-xqx" customClass="SKView">
+                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
+                    </view>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="SZV-WD-TEh" sceneMemberID="firstResponder"/>
+            </objects>
+        </scene>
+    </scenes>
+</document>

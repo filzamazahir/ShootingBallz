@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Bucket
+   type = "1"
+   version = "2.0">
+   <Breakpoints>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Shooting Ballz/HomeScreenViewController.swift"
+            timestampString = "475005338.740414"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "11"
+            endingLineNumber = "11"
+            landmarkName = "HomeScreenViewController"
+            landmarkType = "3">
+            <Locations>
+               <Location
+                  shouldBeEnabled = "No"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "Shooting_Ballz.HomeScreenViewController.__deallocating_deinit"
+                  moduleName = "Shooting Ballz"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/filzamazahir/Documents/CodingDojo/iOS/6-iOSMEAN/shootingballzhackathon/Shooting%20Ballz/Shooting%20Ballz/HomeScreenViewController.swift"
+                  timestampString = "475007205.484083"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "0"
+                  endingLineNumber = "0"
+                  offsetFromSymbolStart = "16">
+               </Location>
+               <Location
+                  shouldBeEnabled = "No"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "Shooting_Ballz.HomeScreenViewController.init (Shooting_Ballz.HomeScreenViewController.Type)(nibName : Swift.Optional&lt;Swift.String&gt;, bundle : Swift.Optional&lt;__ObjC.NSBundle&gt;) -&gt; Shooting_Ballz.HomeScreenViewController"
+                  moduleName = "Shooting Ballz"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/filzamazahir/Documents/CodingDojo/iOS/6-iOSMEAN/shootingballzhackathon/Shooting%20Ballz/Shooting%20Ballz/HomeScreenViewController.swift"
+                  timestampString = "475007205.490219"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "0"
+                  endingLineNumber = "0"
+                  offsetFromSymbolStart = "76">
+               </Location>
+               <Location
+                  shouldBeEnabled = "No"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "Shooting_Ballz.HomeScreenViewController.init (Shooting_Ballz.HomeScreenViewController.Type)(coder : __ObjC.NSCoder) -&gt; Swift.Optional&lt;Shooting_Ballz.HomeScreenViewController&gt;"
+                  moduleName = "Shooting Ballz"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/filzamazahir/Documents/CodingDojo/iOS/6-iOSMEAN/shootingballzhackathon/Shooting%20Ballz/Shooting%20Ballz/HomeScreenViewController.swift"
+                  timestampString = "475007205.490487"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "0"
+                  endingLineNumber = "0"
+                  offsetFromSymbolStart = "36">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+   </Breakpoints>
+</Bucket>
