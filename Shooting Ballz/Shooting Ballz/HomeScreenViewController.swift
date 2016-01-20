@@ -20,7 +20,7 @@ class HomeScreenViewController: UIViewController {
     
     //To hide keyboard when you press return
     func textFieldShouldReturn(textField: UITextField) -> Bool {
-        self.view.endEditing(true)
+        textField.resignFirstResponder()
         return true
     }
     

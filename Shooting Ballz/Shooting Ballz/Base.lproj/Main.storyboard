@@ -30,7 +30,7 @@
                                 <textInputTraits key="textInputTraits"/>
                             </textField>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="3pl-NM-UvG">
-                                <rect key="frame" x="261" y="554" width="78" height="30"/>
+                                <rect key="frame" x="261" y="20" width="78" height="30"/>
                                 <state key="normal" title="Start Game"/>
                                 <connections>
                                     <action selector="startGameButtonPressed:" destination="gpa-AW-dG7" eventType="touchUpInside" id="rsq-fa-nT8"/>
@@ -40,7 +40,7 @@
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
-                            <constraint firstItem="JSq-sI-Cjw" firstAttribute="top" secondItem="3pl-NM-UvG" secondAttribute="bottom" constant="16" id="6sA-1d-PRW"/>
+                            <constraint firstItem="3pl-NM-UvG" firstAttribute="top" secondItem="lki-4Q-yhA" secondAttribute="bottom" id="26V-hM-JWP"/>
                             <constraint firstItem="zZA-4x-TlC" firstAttribute="top" secondItem="Agc-AD-d1p" secondAttribute="bottom" constant="16" id="HJs-io-hb2"/>
                             <constraint firstItem="3pl-NM-UvG" firstAttribute="centerX" secondItem="Im6-t5-G2K" secondAttribute="centerX" id="Md8-AQ-Dlt"/>
                             <constraint firstAttribute="trailingMargin" secondItem="zZA-4x-TlC" secondAttribute="trailing" constant="16" id="b6k-Da-x2Z"/>
