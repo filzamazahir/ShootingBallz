@@ -34,18 +34,27 @@ io.sockets.on('connection', function (socket) {
       players.push(data)
       console.log("Players as of now: ", players);
       // io.sockets.emit("newUserJoinedServer", data);
-      io.sockets.emit("updatePlayers", players[0], players[1], players[2], players[3]);
+      io.sockets.emit("updatePlayers", players[0], players[1]);
     });
 
-    socket.on("fruitHit", function(data){
-    	console.log("Did you make a plane?", data)
-    	io.sockets.emit("gotEm", data)
+    socket.on("x", function(data){
+    	console.log("Got the x coordinate", data)
+    	io.sockets.emit("updateXLocation", data)
+    });
+    socket.on("y", function(data){
+    	console.log("Got the y coordinate", data)
+    	io.sockets.emit("updateYLocation", data)
     });
 
     socket.on("playerOneScored", function(data){
     	console.log("Nice! Player 1", data)
     	io.sockets.emit("updatePlayerOneScore", data)
-    })
+    });
+
+    socket.on("playerTwoScored", function(data){
+    	console.log("Nice! Player 2", data)
+    	io.sockets.emit("updatePlayerTwoScore", data)
+    });
 
     // socket.on('disconnect', function() {
     //     console.log('Got disconnect!');

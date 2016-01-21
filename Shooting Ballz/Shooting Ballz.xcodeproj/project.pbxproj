@@ -29,6 +29,7 @@
 		28F94E751C5017BD005D0708 /* SocketTypes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 28F94E5F1C5017BD005D0708 /* SocketTypes.swift */; };
 		28F94E761C5017BD005D0708 /* SwiftRegex.swift in Sources */ = {isa = PBXBuildFile; fileRef = 28F94E601C5017BD005D0708 /* SwiftRegex.swift */; };
 		28F94E771C5017BD005D0708 /* WebSocket.swift in Sources */ = {isa = PBXBuildFile; fileRef = 28F94E611C5017BD005D0708 /* WebSocket.swift */; };
+		28F94E7B1C50867B005D0708 /* Location.swift in Sources */ = {isa = PBXBuildFile; fileRef = 28F94E7A1C50867B005D0708 /* Location.swift */; };
 		3CD69D991C4F1731009168AE /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3CD69D981C4F1731009168AE /* AppDelegate.swift */; };
 		3CD69D9B1C4F1731009168AE /* GameScene.sks in Resources */ = {isa = PBXBuildFile; fileRef = 3CD69D9A1C4F1731009168AE /* GameScene.sks */; };
 		3CD69D9D1C4F1732009168AE /* GameScene.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3CD69D9C1C4F1732009168AE /* GameScene.swift */; };
@@ -64,6 +65,7 @@
 		28F94E5F1C5017BD005D0708 /* SocketTypes.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = SocketTypes.swift; path = ../../SocketIO/SocketTypes.swift; sourceTree = "<group>"; };
 		28F94E601C5017BD005D0708 /* SwiftRegex.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = SwiftRegex.swift; path = ../../SocketIO/SwiftRegex.swift; sourceTree = "<group>"; };
 		28F94E611C5017BD005D0708 /* WebSocket.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = WebSocket.swift; path = ../../SocketIO/WebSocket.swift; sourceTree = "<group>"; };
+		28F94E7A1C50867B005D0708 /* Location.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Location.swift; sourceTree = "<group>"; };
 		3CD69D951C4F1731009168AE /* Shooting Ballz.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Shooting Ballz.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		3CD69D981C4F1731009168AE /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		3CD69D9A1C4F1731009168AE /* GameScene.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = GameScene.sks; sourceTree = "<group>"; };
@@ -149,6 +151,7 @@
 				3CD69DAE1C4F2333009168AE /* HomeScreenViewController.swift */,
 				3CD69DE11C500037009168AE /* SocketDelegate.swift */,
 				3CD69DE31C5010F2009168AE /* Player.swift */,
+				28F94E7A1C50867B005D0708 /* Location.swift */,
 			);
 			path = "Shooting Ballz";
 			sourceTree = "<group>";
@@ -185,6 +188,7 @@
 				TargetAttributes = {
 					3CD69D941C4F1731009168AE = {
 						CreatedOnToolsVersion = 7.2;
+						DevelopmentTeam = 5Q7JKYA44W;
 					};
 				};
 			};
@@ -231,6 +235,7 @@
 				28F94E661C5017BD005D0708 /* SocketEngine.swift in Sources */,
 				28F94E6A1C5017BD005D0708 /* SocketEngineSpec.swift in Sources */,
 				3CD69DE41C5010F2009168AE /* Player.swift in Sources */,
+				28F94E7B1C50867B005D0708 /* Location.swift in Sources */,
 				28F94E641C5017BD005D0708 /* SocketAnyEvent.swift in Sources */,
 				3CD69D9D1C4F1732009168AE /* GameScene.swift in Sources */,
 				28F94E651C5017BD005D0708 /* SocketClientSpec.swift in Sources */,
@@ -365,10 +370,13 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				INFOPLIST_FILE = "Shooting Ballz/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "ca.filza.Shooting-Ballz";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
 			};
 			name = Debug;
 		};
@@ -376,10 +384,13 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				INFOPLIST_FILE = "Shooting Ballz/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "ca.filza.Shooting-Ballz";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
 			};
 			name = Release;
 		};
