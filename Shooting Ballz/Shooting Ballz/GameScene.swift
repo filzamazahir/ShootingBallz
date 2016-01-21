@@ -24,6 +24,9 @@ class GameScene: SKScene {
     var playerOne: Player?, playerTwo: Player?
     var scoreOne: Int = 0
     var scoreTwo: Int = 0
+    
+    
+    var initiatedOnce: Bool = false
 
     
     override func didMoveToView(view: SKView) {
@@ -39,7 +42,7 @@ class GameScene: SKScene {
         startGameLabel!.fontSize = 40
         startGameLabel!.position = CGPoint(x:CGRectGetMidX(self.frame), y:CGRectGetMidY(self.frame))
         
-        socket = SocketIOClient(socketURL: "http://192.168.1.42:5000")
+        socket = SocketIOClient(socketURL: "http://192.168.1.59:5000")
         // Filza 192.168.1.42
         // Jimmy 192.168.1.59
         socket?.connect()
@@ -78,30 +81,6 @@ class GameScene: SKScene {
             
         }
         
-
-        
-//        socket!.on("newUserJoinedServer") { data, ack in
-//            
-//            print("user joined in Game Scene: \(data)")
-//            
-//            if self.playerOne == nil {
-//                self.createPlayerOneLabel(data[0] as! String)
-//            }
-//            else if self.playerOne != nil && self.playerTwo == nil {
-//                self.createPlayerTwoLabel(data[0] as! String)
-//
-//            }
-//            
-//            else if self.playerOne != nil && self.playerTwo != nil && self.playerThree == nil{
-//                // create Player Three Label
-//            }
-//            
-//            else if self.playerOne != nil && self.playerTwo != nil && self.playerThree != nil && self.playerFour == nil{
-//                // create Player Four Label
-//            }
-//            
-//            
-//        }
         
         // TODO: ADD CHILD startGameLabel
         self.addChild(myLabel)
@@ -118,9 +97,13 @@ class GameScene: SKScene {
             
             // TODO: INITIATE THE GAME ON THE FIRST TOUCH AND HIDE START GAME LABEL
             if gameStart == 0 {
-                initiateGame()
+                if initiatedOnce == false {
+                    initiateGame()
+                    initiatedOnce = true
+                }
+                socket?.emit("gameStarted")
                 startGameLabel!.hidden = true
-                gameStart++
+                gameStart = 1
                 return
             }
             
@@ -168,27 +151,26 @@ class GameScene: SKScene {
             
             
             
-            
-//            if let playerOneName = playerOne?.playerName {
-//                if playerOneName == currentPlayer {
-//                    print("Score one for player 1")
-//                    increasePlayerOneScore(10)
-//                }
-//            } else if let playerTwoName = playerTwo?.playerName {
-//                if playerTwoName == currentPlayer {
-//                    print("Score one for player 2")
-//                    increasePlayerTwoScore(10)
-//                }
-//            }
-            
-            
-            //            controller.increasePlayerOneScore()
+
         }
     }
     
     override func update(currentTime: CFTimeInterval) {
         /* Called before each frame is rendered */
-        
+        if gameStart == 0 {
+            print("gameStart in update", gameStart)
+            
+            socket?.on("startGame") { data, ack in
+                if self.initiatedOnce == false {
+                    self.initiateGame()
+                    self.initiatedOnce = true
+                }
+                
+                self.startGameLabel!.hidden = true
+                self.gameStart = 1
+            }
+            
+        }
         
         
         
@@ -275,36 +257,6 @@ class GameScene: SKScene {
         
     }
     
-
-//    func increasePlayerOneScore(points: Int) {
-//        self.scoreOne += points
-//        
-//        let score = self.childNodeWithName("playerOne") as! SKLabelNode
-//            
-//        if let playerOneName = playerOne?.playerName {
-//            socket?.emit("playerOneScored", self.scoreOne)
-//            socket!.on("updatePlayerOneScore") { data, ack in
-//                print("data returned to all members", data, "and extracted", data[0])
-//                score.text = String(format: "\(playerOneName): %04u", data[0] as! Int)
-//            }
-//        }
-//    }
-    
-//    func increasePlayerTwoScore(points: Int) {
-//        self.scoreTwo += points
-//        
-//        
-//        let score = self.childNodeWithName("playerTwo") as! SKLabelNode
-//        
-//        if let playerTwoName = playerTwo?.playerName {
-//            score.text = String(format: "\(playerTwoName): %04u", self.scoreTwo)
-//            socket?.emit("playerTwoScored", points)
-//            socket!.on("updatePlayerTwoScore") { data, ack in
-//                print("data returned to all members", data, "and extracted", data[0])
-//                score.text = String(format: "\(playerTwoName): %04u", data[0] as! Int)
-//            }
-//        }
-//    }
     
     // TODO: update scores together
     func updateScores() {
@@ -379,6 +331,7 @@ class GameScene: SKScene {
     
     // TODO: Jimmy Added Initate Game
     func initiateGame() {
+        print("game is starting NOW!")
         // run code that sends out the balls in 4 second intervals
         runAction(SKAction.repeatActionForever(
             SKAction.sequence([

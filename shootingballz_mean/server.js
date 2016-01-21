@@ -56,6 +56,11 @@ io.sockets.on('connection', function (socket) {
     	io.sockets.emit("updatePlayerTwoScore", data)
     });
 
+    socket.on("gameStarted", function(){
+    	console.log("Game is about to begin")
+    	io.sockets.emit("startGame")
+    })
+
     // socket.on('disconnect', function() {
     //     console.log('Got disconnect!');
     //     players = []
