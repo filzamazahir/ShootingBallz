@@ -28,4 +28,14 @@ io.sockets.on('connection', function (socket) {
       io.sockets.emit("newUserJoinedServer", data);
     });
 
+    socket.on("fruitHit", function(data){
+    	console.log("Did you make a plane?", data)
+    	io.sockets.emit("gotEm", data)
+    });
+
+    socket.on("playerOneScored", function(data){
+    	console.log("Nice! Player 1", data)
+    	io.sockets.emit("updatePlayerOneScore", data)
+    })
+
 });

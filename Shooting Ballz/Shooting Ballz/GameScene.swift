@@ -23,7 +23,7 @@ class GameScene: SKScene {
         myLabel.fontSize = 45
         myLabel.position = CGPoint(x:CGRectGetMidX(self.frame), y:CGRectGetMidY(self.frame))
         
-        socket = SocketIOClient(socketURL: "http://192.168.1.42:5000")
+        socket = SocketIOClient(socketURL: "http://192.168.1.59:5000")
         // http://192.168.1.42
         socket?.connect()
         
@@ -32,7 +32,6 @@ class GameScene: SKScene {
             
             self.socket?.emit("newUserConnected", self.currentPlayer!)
         }
-        
         
         socket!.on("newUserJoinedServer") { data, ack in
             
@@ -68,6 +67,7 @@ class GameScene: SKScene {
         /* Called when a touch begins */
         
         for touch in touches {
+            
             let location = touch.locationInNode(self)
             
             let sprite = SKSpriteNode(imageNamed:"Spaceship")
@@ -81,13 +81,24 @@ class GameScene: SKScene {
             sprite.runAction(SKAction.repeatActionForever(action))
             
             self.addChild(sprite)
+            
+
+            
             print("player one:", playerOne?.playerName)
             print("player two:", playerTwo?.playerName)
             print("player three:", playerThree?.playerName)
             print("player four:", playerFour?.playerName)
             
             if let playerOneName = playerOne?.playerName {
-                increasePlayerScore(playerOneName, points: 10)
+                if playerOneName == "Player 1" {
+                    print("Score one for player 1")
+                    increasePlayerOneScore(10)
+                }
+            } else if let playerTwoName = playerTwo?.playerName {
+                if playerTwoName == "Player 2" {
+                    print("Score one for player 2")
+                    increasePlayerTwoScore(10)
+                }
             }
             
             
@@ -132,18 +143,31 @@ class GameScene: SKScene {
         addChild(playerTwoScoreLabel)
     }
     
-    func increasePlayerScore(name: String, points: Int) {
+    func increasePlayerOneScore(points: Int) {
         self.score += points
         
-        if name == "Player 1" {
-            let score = self.childNodeWithName("playerOne") as! SKLabelNode
+        let score = self.childNodeWithName("playerOne") as! SKLabelNode
             
-            print("Score variable", score)
-            
-            if let playerOneName = playerOne?.playerName {
-                score.text = String(format: "\(playerOneName): %04u", self.score)
+        if let playerOneName = playerOne?.playerName {
+//            score.text = String(format: "\(playerOneName): %04u", self.score)
+            socket?.emit("playerOneScored", self.score)
+            socket!.on("updatePlayerOneScore") { data, ack in
+                print("data returned to all members", data, "and extracted", data[0])
+                score.text = String(format: "\(playerOneName): %04u", data[0] as! Int)
             }
-        } // End of if
+        }
+    }
+    
+    func increasePlayerTwoScore(points: Int) {
+        self.score += points
         
+        
+        let score = self.childNodeWithName("playerTwo") as! SKLabelNode
+        
+        print("Score variable", score)
+        
+        if let playerTwoName = playerTwo?.playerName {
+            score.text = String(format: "\(playerTwoName): %04u", self.score)
+        }
     }
 }
