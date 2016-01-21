@@ -22,7 +22,9 @@ class GameScene: SKScene {
     var gameStart: Int = 0
     
     var playerOne: Player?, playerTwo: Player?
-    var score: Int = 0
+    var scoreOne: Int = 0
+    var scoreTwo: Int = 0
+
     
     override func didMoveToView(view: SKView) {
         /* Setup your scene here */
@@ -37,8 +39,9 @@ class GameScene: SKScene {
         startGameLabel!.fontSize = 40
         startGameLabel!.position = CGPoint(x:CGRectGetMidX(self.frame), y:CGRectGetMidY(self.frame))
         
-        socket = SocketIOClient(socketURL: "http://192.168.1.59:5000")
-        // http://192.168.1.42
+        socket = SocketIOClient(socketURL: "http://192.168.1.42:5000")
+        // Filza 192.168.1.42
+        // Jimmy 192.168.1.59
         socket?.connect()
         
         socket?.on("connect") { data, ack in
@@ -49,7 +52,7 @@ class GameScene: SKScene {
 
         socket!.on("updatePlayers") { data , ack in
             print("All players: \(data)")
-
+            self.players = []
             
             for player in data{
                 print("Player: \(player)")
@@ -141,13 +144,7 @@ class GameScene: SKScene {
 //            }
             
 //            playerLocation = CGPoint(x: xCrd, y: yCrd)
-            
 
-            
-            
-
-            
-            
             
             
 //            
@@ -198,10 +195,18 @@ class GameScene: SKScene {
         // JIMMY: Boolean to check to see if player one or player two scored
         // NOT WORKING ON INDIVIDUAL BALLS YET
         if playerOneScored == true {
-            increasePlayerOneScore(10)
+            self.scoreOne += 10
+            socket?.emit("playerOneScored", self.scoreOne)
+            updateScores()
+//            increasePlayerOneScore(10)
+            
             playerOneScored = false
         } else if playerTwoScored == true {
-            increasePlayerTwoScore(10)
+            self.scoreTwo += 10
+            socket?.emit("playerTwoScored", self.scoreTwo)
+            updateScores()
+//            increasePlayerTwoScore(10)
+            
             playerTwoScored = false
         }
         
@@ -233,12 +238,16 @@ class GameScene: SKScene {
     // TODO: UPDATED THE ALIGNMENT OF PLAYER LABEL
     func createPlayerLabel(number: Int, name: String) {
         if number == 1 {
+            if let _ = playerOne?.playerName {
+                return
+            }
             playerOne = Player(playerName: name)
             let playerOneScoreLabel = SKLabelNode(fontNamed: "Courier")
             playerOneScoreLabel.name = "playerOne"
             playerOneScoreLabel.fontSize = 25
             if let playerOneName = playerOne?.playerName {
-                playerOneScoreLabel.text = String(format: "\(playerOneName): %04u", 0)
+                
+                playerOneScoreLabel.text = String(format: "\(playerOneName): %04u", scoreOne)
             }
             
             playerOneScoreLabel.horizontalAlignmentMode = .Right
@@ -251,11 +260,13 @@ class GameScene: SKScene {
             playerTwoScoreLabel.name = "playerTwo"
             playerTwoScoreLabel.fontSize = 25
             if let playerTwoName = playerTwo?.playerName {
-                playerTwoScoreLabel.text = String(format: "\(playerTwoName): %04u", 0)
+                playerTwoScoreLabel.text = String(format: "\(playerTwoName): %04u", scoreTwo)
             }
             
             playerTwoScoreLabel.horizontalAlignmentMode = .Right
+
             playerTwoScoreLabel.position = CGPoint(x: frame.size.width / 2, y: size.height - (130 + playerTwoScoreLabel.frame.size.height/2))
+
             addChild(playerTwoScoreLabel)
         }
         
@@ -265,35 +276,63 @@ class GameScene: SKScene {
     }
     
 
-    func increasePlayerOneScore(points: Int) {
-        self.score += points
-        
-        let score = self.childNodeWithName("playerOne") as! SKLabelNode
-            
-        if let playerOneName = playerOne?.playerName {
-//            score.text = String(format: "\(playerOneName): %04u", self.score)
-            socket?.emit("playerOneScored", self.score)
-            socket!.on("updatePlayerOneScore") { data, ack in
-                print("data returned to all members", data, "and extracted", data[0])
-                score.text = String(format: "\(playerOneName): %04u", data[0] as! Int)
-            }
-        }
-    }
+//    func increasePlayerOneScore(points: Int) {
+//        self.scoreOne += points
+//        
+//        let score = self.childNodeWithName("playerOne") as! SKLabelNode
+//            
+//        if let playerOneName = playerOne?.playerName {
+//            socket?.emit("playerOneScored", self.scoreOne)
+//            socket!.on("updatePlayerOneScore") { data, ack in
+//                print("data returned to all members", data, "and extracted", data[0])
+//                score.text = String(format: "\(playerOneName): %04u", data[0] as! Int)
+//            }
+//        }
+//    }
     
-    func increasePlayerTwoScore(points: Int) {
-        self.score += points
-        
-        
-        let score = self.childNodeWithName("playerTwo") as! SKLabelNode
-        
-        if let playerTwoName = playerTwo?.playerName {
-            score.text = String(format: "\(playerTwoName): %04u", self.score)
-            socket?.emit("playerTwoScored", self.score)
-            socket!.on("updatePlayerTwoScore") { data, ack in
-                print("data returned to all members", data, "and extracted", data[0])
-                score.text = String(format: "\(playerTwoName): %04u", data[0] as! Int)
+//    func increasePlayerTwoScore(points: Int) {
+//        self.scoreTwo += points
+//        
+//        
+//        let score = self.childNodeWithName("playerTwo") as! SKLabelNode
+//        
+//        if let playerTwoName = playerTwo?.playerName {
+//            score.text = String(format: "\(playerTwoName): %04u", self.scoreTwo)
+//            socket?.emit("playerTwoScored", points)
+//            socket!.on("updatePlayerTwoScore") { data, ack in
+//                print("data returned to all members", data, "and extracted", data[0])
+//                score.text = String(format: "\(playerTwoName): %04u", data[0] as! Int)
+//            }
+//        }
+//    }
+    
+    // TODO: update scores together
+    func updateScores() {
+        socket!.on("updatePlayerOneScore") { data, ack in
+            print("Player 1 updated score: \(data[0]) and previously had \(self.scoreOne), current player is \(self.currentPlayer)")
+            let playerOneLabel = self.childNodeWithName("playerOne") as! SKLabelNode
+            if let playerOneName = self.playerOne?.playerName {
+                self.scoreOne = data[0] as! Int
+                
+                playerOneLabel.text = String(format: "\(playerOneName): %04u", self.scoreOne)
             }
         }
+    
+    
+
+        
+        socket!.on("updatePlayerTwoScore") { data, ack in
+            print("Player 2 updated score: \(data[0]) and previously had \(self.scoreTwo), current player is \(self.currentPlayer)")
+            let playerTwoLabel = self.childNodeWithName("playerTwo") as! SKLabelNode
+        
+            if let playerTwoName = self.playerTwo?.playerName {
+                self.scoreTwo = data[0] as! Int
+                playerTwoLabel.text = String(format: "\(playerTwoName): %04u", self.scoreTwo)
+            }
+        }
+        
+        
+        
     }
     
     // JIMMY: Functions to add random balls

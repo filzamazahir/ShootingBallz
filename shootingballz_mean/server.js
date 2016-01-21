@@ -47,12 +47,12 @@ io.sockets.on('connection', function (socket) {
     });
 
     socket.on("playerOneScored", function(data){
-    	console.log("Nice! Player 1", data)
+    	console.log("Nice! Player 1 scored", data)
     	io.sockets.emit("updatePlayerOneScore", data)
     });
 
     socket.on("playerTwoScored", function(data){
-    	console.log("Nice! Player 2", data)
+    	console.log("Nice! Player 2 scored", data)
     	io.sockets.emit("updatePlayerTwoScore", data)
     });
 
