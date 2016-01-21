@@ -11,23 +11,31 @@ import SpriteKit
 class GameScene: SKScene {
     
     var socket: SocketIOClient?
+    var startGameLabel: SKLabelNode?
     var currentPlayer: String?
     var players = [String]()
     var playerOneScored: Bool = false
     var playerTwoScored: Bool = false
-    var ballPressed: Bool = false
     var playerLocation: CGPoint?
+    var ballSprite: SKSpriteNode?
     var ballLocation: CGPoint?
+    var gameStart: Int = 0
     
     var playerOne: Player?, playerTwo: Player?
     var score: Int = 0
     
     override func didMoveToView(view: SKView) {
         /* Setup your scene here */
+        // TODO: UPDATED BOTH LABELS
         let myLabel = SKLabelNode(fontNamed:"Chalkduster")
         myLabel.text = "Shooting Ballz"
         myLabel.fontSize = 45
-        myLabel.position = CGPoint(x:CGRectGetMidX(self.frame), y:CGRectGetMidY(self.frame))
+        myLabel.position = CGPoint(x:CGRectGetMidX(self.frame), y:CGRectGetMaxY(self.frame)-50)
+        
+        startGameLabel = SKLabelNode(fontNamed: "Chalkduster")
+        startGameLabel!.text = "Tap to start"
+        startGameLabel!.fontSize = 40
+        startGameLabel!.position = CGPoint(x:CGRectGetMidX(self.frame), y:CGRectGetMidY(self.frame))
         
         socket = SocketIOClient(socketURL: "http://192.168.1.59:5000")
         // http://192.168.1.42
@@ -38,8 +46,6 @@ class GameScene: SKScene {
             
             self.socket?.emit("newUserConnected", self.currentPlayer!)
         }
-        
-        print("funnnnay")
 
         socket!.on("updatePlayers") { data , ack in
             print("All players: \(data)")
@@ -69,14 +75,6 @@ class GameScene: SKScene {
             
         }
         
-        
-        // run code that sends out the balls in 4 second intervals
-        runAction(SKAction.repeatActionForever(
-            SKAction.sequence([
-                SKAction.runBlock(addSportsBall),
-                SKAction.waitForDuration(4.0)
-                ])
-            ))
 
         
 //        socket!.on("newUserJoinedServer") { data, ack in
@@ -102,8 +100,9 @@ class GameScene: SKScene {
 //            
 //        }
         
-        
+        // TODO: ADD CHILD startGameLabel
         self.addChild(myLabel)
+        self.addChild(startGameLabel!)
         
         
         
@@ -114,7 +113,17 @@ class GameScene: SKScene {
         
         for touch in touches {
             
+            // TODO: INITIATE THE GAME ON THE FIRST TOUCH AND HIDE START GAME LABEL
+            if gameStart == 0 {
+                initiateGame()
+                startGameLabel!.hidden = true
+                gameStart++
+                return
+            }
+            
             playerLocation = touch.locationInNode(self)
+            
+            playerPressedBall()
             //let xy: Location = Location(x: Float(location.x), y: Float(location.y))
             
             
@@ -133,27 +142,7 @@ class GameScene: SKScene {
             
 //            playerLocation = CGPoint(x: xCrd, y: yCrd)
             
-            
-            // JIMMY: Checking to see if player's Y-axis location is the same as the ball's y-axis location
-            // NOT YET WORKING ON INDIVIDUAL BALLS
-            if playerLocation!.y == ballLocation!.y {
-                
-                
-                
-                // JIMMY: Boolean to check to see if ball has been pressed
-                // NOT WORKING YET
-                ballPressed = true
-                
-                // CHECK FOR CURRENT PLAYER
-                print("currentPlayer: ", currentPlayer)
-                if currentPlayer == playerOne?.playerName {
-                    playerOneScored = true
-                } else if currentPlayer == playerTwo?.playerName {
-                    playerTwoScored = true
-                }
-                
-                
-            }
+
             
             
 
@@ -206,8 +195,6 @@ class GameScene: SKScene {
         
         
         
-        
-        
         // JIMMY: Boolean to check to see if player one or player two scored
         // NOT WORKING ON INDIVIDUAL BALLS YET
         if playerOneScored == true {
@@ -241,44 +228,9 @@ class GameScene: SKScene {
         
         
         
-        
-        
-        // Check to see if ball was pressed
-        // JIMMY: Will add functionality to score points as balls are being passed through
-        
-        if ballPressed == true {
-            
-//            let arrayOfBalls: Array = ["baseball", "basketball", "puck", "tennisball", "golfball", "football"]
-//            
-//            let rand = Int(arc4random_uniform(6))
-//            
-//            let sprite = SKSpriteNode(imageNamed:arrayOfBalls[rand])
-//            
-//            sprite.xScale = 0.5
-//            sprite.yScale = 0.5
-//            sprite.position = playerLocation!
-//            
-//            let action = SKAction.rotateByAngle(CGFloat(M_PI), duration:1)
-//            
-//            sprite.runAction(SKAction.repeatActionForever(action))
-//            
-//            self.addChild(sprite)
-            
-            
-            // USED TO RESET THE BALL PRESSED BOOLEAN
-            ballPressed = false
-            
-        }
-        
-        
-        
-        
-        
-        
-        
-        
     }
     
+    // TODO: UPDATED THE ALIGNMENT OF PLAYER LABEL
     func createPlayerLabel(number: Int, name: String) {
         if number == 1 {
             playerOne = Player(playerName: name)
@@ -290,7 +242,7 @@ class GameScene: SKScene {
             }
             
             playerOneScoreLabel.horizontalAlignmentMode = .Right
-            playerOneScoreLabel.position = CGPoint(x: frame.size.width / 2, y: size.height - (40 + playerOneScoreLabel.frame.size.height/2))
+            playerOneScoreLabel.position = CGPoint(x: frame.size.width / 2, y: size.height - (90 + playerOneScoreLabel.frame.size.height/2))
             addChild(playerOneScoreLabel)
         }
         else if number == 2 {
@@ -302,8 +254,8 @@ class GameScene: SKScene {
                 playerTwoScoreLabel.text = String(format: "\(playerTwoName): %04u", 0)
             }
             
-            playerTwoScoreLabel.horizontalAlignmentMode = .Left
-            playerTwoScoreLabel.position = CGPoint(x: frame.size.width / 2, y: size.height - (40 + playerTwoScoreLabel.frame.size.height/2))
+            playerTwoScoreLabel.horizontalAlignmentMode = .Right
+            playerTwoScoreLabel.position = CGPoint(x: frame.size.width / 2, y: size.height - (130 + playerTwoScoreLabel.frame.size.height/2))
             addChild(playerTwoScoreLabel)
         }
         
@@ -371,6 +323,7 @@ class GameScene: SKScene {
         ball.position = CGPoint(x: size.width + ball.size.width/2, y: actualY)
         
         // set the GLOBAL ballLocation variable
+        ballSprite = ball
         ballLocation = ball.position
         
         // add ball to scene
@@ -383,5 +336,46 @@ class GameScene: SKScene {
         let actionMove = SKAction.moveTo(CGPoint(x: -ball.size.width/2, y: actualY), duration: NSTimeInterval(actualDuration))
         let actionMoveDone = SKAction.removeFromParent()
         ball.runAction(SKAction.sequence([actionMove, actionMoveDone]))
+    }
+    
+    // TODO: Jimmy Added Initate Game
+    func initiateGame() {
+        // run code that sends out the balls in 4 second intervals
+        runAction(SKAction.repeatActionForever(
+            SKAction.sequence([
+                SKAction.runBlock(addSportsBall),
+                SKAction.waitForDuration(4.0)
+                ])
+            ))
+
+    }
+    
+    // TODO: Player Pressed Ball Function
+    func playerPressedBall() {
+        // TODO: Updated scoring logic
+        // JIMMY: Checking to see if player's Y-axis location is the same as the ball's y-axis location
+        // NOT YET WORKING ON INDIVIDUAL BALLS
+        
+        let playerPressedLocation = Int(playerLocation!.y)
+        let maxBallLocation = Int(ballLocation!.y) + 10
+        let minBallLocation = Int(ballLocation!.y) - 10
+        
+        
+        if playerPressedLocation <= maxBallLocation && playerPressedLocation >= minBallLocation {
+            // TODO: ADDED BALL SPRITE TO HIDE
+            ballSprite?.hidden = true
+            
+            
+            
+            // CHECK FOR CURRENT PLAYER
+            print("currentPlayer: ", currentPlayer)
+            if currentPlayer == playerOne?.playerName {
+                playerOneScored = true
+            } else if currentPlayer == playerTwo?.playerName {
+                playerTwoScored = true
+            }
+            
+            
+        }
     }
 }
