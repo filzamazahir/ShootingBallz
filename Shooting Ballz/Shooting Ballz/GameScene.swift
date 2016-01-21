@@ -12,6 +12,7 @@ class GameScene: SKScene {
     
     var socket: SocketIOClient?
     var currentPlayer: String?
+    var players = [String]()
     
     var playerOne: Player?, playerTwo: Player?, playerThree: Player?, playerFour: Player?
     var score: Int = 0
@@ -33,28 +34,58 @@ class GameScene: SKScene {
             self.socket?.emit("newUserConnected", self.currentPlayer!)
         }
         
-        socket!.on("newUserJoinedServer") { data, ack in
-            
-            print("user joined in Game Scene: \(data)")
-            
-            if self.playerOne == nil {
-                self.createPlayerOneLabel(data[0] as! String)
-            }
-            else if self.playerOne != nil && self.playerTwo == nil {
-                self.createPlayerTwoLabel(data[0] as! String)
+        
 
+        socket!.on("updatePlayers") { data , ack in
+            print("All players: \(data)")
+
+            
+            for player in data{
+                print("Player: \(player)")
+
+                if player is NSNull {
+                    //do nothing
+                }
+                
+                else {
+                    self.players.append(player as! String)
+                }
+               
             }
             
-            else if self.playerOne != nil && self.playerTwo != nil && self.playerThree == nil{
-                // create Player Three Label
+            print(self.players)
+            for var i=0; i<self.players.count; ++i {
+                self.createPlayerLabel(i+1, name: self.players[i])
             }
             
-            else if self.playerOne != nil && self.playerTwo != nil && self.playerThree != nil && self.playerFour == nil{
-                // create Player Four Label
-            }
+            
+            
             
             
         }
+        
+//        socket!.on("newUserJoinedServer") { data, ack in
+//            
+//            print("user joined in Game Scene: \(data)")
+//            
+//            if self.playerOne == nil {
+//                self.createPlayerOneLabel(data[0] as! String)
+//            }
+//            else if self.playerOne != nil && self.playerTwo == nil {
+//                self.createPlayerTwoLabel(data[0] as! String)
+//
+//            }
+//            
+//            else if self.playerOne != nil && self.playerTwo != nil && self.playerThree == nil{
+//                // create Player Three Label
+//            }
+//            
+//            else if self.playerOne != nil && self.playerTwo != nil && self.playerThree != nil && self.playerFour == nil{
+//                // create Player Four Label
+//            }
+//            
+//            
+//        }
         
         
         self.addChild(myLabel)
@@ -110,39 +141,46 @@ class GameScene: SKScene {
         /* Called before each frame is rendered */
     }
     
-    func createPlayerOneLabel(name: String) {
-        playerOne = Player(playerName: name)
-        let playerOneScoreLabel = SKLabelNode(fontNamed: "Courier")
-        playerOneScoreLabel.name = "playerOne"
-        playerOneScoreLabel.fontSize = 25
-        if let playerOneName = playerOne?.playerName {
-            playerOneScoreLabel.text = String(format: "\(playerOneName): %04u", 0)
+    func createPlayerLabel(number: Int, name: String) {
+        if number == 1 {
+            playerOne = Player(playerName: name)
+            let playerOneScoreLabel = SKLabelNode(fontNamed: "Courier")
+            playerOneScoreLabel.name = "playerOne"
+            playerOneScoreLabel.fontSize = 25
+            if let playerOneName = playerOne?.playerName {
+                playerOneScoreLabel.text = String(format: "\(playerOneName): %04u", 0)
+            }
+            
+            playerOneScoreLabel.horizontalAlignmentMode = .Right
+            playerOneScoreLabel.position = CGPoint(x: frame.size.width / 2, y: size.height - (40 + playerOneScoreLabel.frame.size.height/2))
+            addChild(playerOneScoreLabel)
+        }
+        else if number == 2 {
+            playerTwo = Player(playerName: name)
+            let playerTwoScoreLabel = SKLabelNode(fontNamed: "Courier")
+            playerTwoScoreLabel.name = "playerTwo"
+            playerTwoScoreLabel.fontSize = 25
+            if let playerTwoName = playerTwo?.playerName {
+                playerTwoScoreLabel.text = String(format: "\(playerTwoName): %04u", 0)
+            }
+            
+            playerTwoScoreLabel.horizontalAlignmentMode = .Left
+            playerTwoScoreLabel.position = CGPoint(x: frame.size.width / 2, y: size.height - (40 + playerTwoScoreLabel.frame.size.height/2))
+            addChild(playerTwoScoreLabel)
+        }
+        else if number == 2 {
+            playerThree = Player(playerName: name)
+        }
+        else {
+            playerFour = Player(playerName: name)
         }
         
-        playerOneScoreLabel.horizontalAlignmentMode = .Right
-        playerOneScoreLabel.position = CGPoint(x: frame.size.width / 2, y: size.height - (40 + playerOneScoreLabel.frame.size.height/2))
         
-        //        playerOneScoreLabel.position = CGPoint(x: frame.size.width / 2, y: size.height - (40 + playerOneScoreLabel.frame.size.height/2))
-        addChild(playerOneScoreLabel)
+        
+        
     }
     
-    
-    func createPlayerTwoLabel(name: String) {
-        playerTwo = Player(playerName: name)
-        let playerTwoScoreLabel = SKLabelNode(fontNamed: "Courier")
-        playerTwoScoreLabel.name = "playerTwo"
-        playerTwoScoreLabel.fontSize = 25
-        if let playerTwoName = playerTwo?.playerName {
-            playerTwoScoreLabel.text = String(format: "\(playerTwoName): %04u", 0)
-        }
-        
-        playerTwoScoreLabel.horizontalAlignmentMode = .Left
-        playerTwoScoreLabel.position = CGPoint(x: frame.size.width / 2, y: size.height - (40 + playerTwoScoreLabel.frame.size.height/2))
-        
-        //        playerOneScoreLabel.position = CGPoint(x: frame.size.width / 2, y: size.height - (40 + playerOneScoreLabel.frame.size.height/2))
-        addChild(playerTwoScoreLabel)
-    }
-    
+
     func increasePlayerOneScore(points: Int) {
         self.score += points
         
