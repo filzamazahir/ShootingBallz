@@ -25,13 +25,17 @@ class GameScene: SKScene {
     var scoreOne: Int = 0
     var scoreTwo: Int = 0
     
+    var ballCreated = false
+    
+    let arrayOfBalls  = ["baseball", "basketball", "puck", "tennisball", "golfball", "football"]
+    
     
     var initiatedOnce: Bool = false
 
     
     override func didMoveToView(view: SKView) {
         /* Setup your scene here */
-        // TODO: UPDATED BOTH LABELS
+
         let myLabel = SKLabelNode(fontNamed:"Chalkduster")
         myLabel.text = "Shooting Ballz"
         myLabel.fontSize = 45
@@ -42,7 +46,7 @@ class GameScene: SKScene {
         startGameLabel!.fontSize = 40
         startGameLabel!.position = CGPoint(x:CGRectGetMidX(self.frame), y:CGRectGetMidY(self.frame))
         
-        socket = SocketIOClient(socketURL: "http://192.168.1.59:5000")
+        socket = SocketIOClient(socketURL: "http://192.168.1.42:5000")
         // Filza 192.168.1.42
         // Jimmy 192.168.1.59
         socket?.connect()
@@ -76,19 +80,13 @@ class GameScene: SKScene {
             }
             
             
-            
-            
-            
         }
-        
-        
-        // TODO: ADD CHILD startGameLabel
         self.addChild(myLabel)
         self.addChild(startGameLabel!)
-        
-        
-        
     }
+    
+    
+    
     
     override func touchesBegan(touches: Set<UITouch>, withEvent event: UIEvent?) {
         /* Called when a touch begins */
@@ -110,7 +108,9 @@ class GameScene: SKScene {
             playerLocation = touch.locationInNode(self)
             
             playerPressedBall()
-            //let xy: Location = Location(x: Float(location.x), y: Float(location.y))
+            
+            
+//            let xy: Location = Location(x: Float(location.x), y: Float(location.y))
             
             
 //            socket?.emit("x", location.x)
@@ -162,62 +162,52 @@ class GameScene: SKScene {
             
             socket?.on("startGame") { data, ack in
                 if self.initiatedOnce == false {
-                    self.initiateGame()
+                    // self.initiateGame()
                     self.initiatedOnce = true
                 }
                 
                 self.startGameLabel!.hidden = true
                 self.gameStart = 1
             }
+        }
+        
+        //TODO: Listen to updateBalls socket
+        //Listen to this in intervals..otherwise it hears one socket over 100 times
+        if self.ballCreated == false {
+            socket?.on("updateBalls") { data, ack in
+            
+                print("listening to updateBalls", data)
+                let ballIndexsocket = data[0]
+                let ballYPositionsocket = data[1]
+                let ballSpeedsocket = data[2]
+                
+                // create ball with these variables FOR player who didnt press tap
+                self.createRandomBallParameters(ballIndexsocket as! Int, height: ballYPositionsocket as! CGFloat, speed: ballSpeedsocket as! CGFloat)
+                self.ballCreated = true
+            }
+            
             
         }
         
         
         
-        // JIMMY: Boolean to check to see if player one or player two scored
-        // NOT WORKING ON INDIVIDUAL BALLS YET
+        // Boolean to check to see if player one or player two scored
         if playerOneScored == true {
             self.scoreOne += 10
             socket?.emit("playerOneScored", self.scoreOne)
             updateScores()
-//            increasePlayerOneScore(10)
-            
             playerOneScored = false
         } else if playerTwoScored == true {
             self.scoreTwo += 10
             socket?.emit("playerTwoScored", self.scoreTwo)
             updateScores()
-//            increasePlayerTwoScore(10)
-            
             playerTwoScored = false
         }
         
         
-        
-        
-        
-        
-        
-        
-//        socket?.emit("x", location.x)
-//        socket!.on("updateXLocation") { data, ack in
-//            print("x data in updatePlayer", data)
-//            let xCrd: CGFloat = CGFloat(data[0] as! NSNumber)
-//            
-//        }
-//        
-//        socket?.emit("y", location.y)
-//        socket!.on("updateYLocation") { data, ack in
-//            print("y data in updatePlayer", data)
-//            let yCrd: CGFloat = CGFloat(data[0] as! NSNumber)
-//        }
-        
-        
-        
-        
     }
     
-    // TODO: UPDATED THE ALIGNMENT OF PLAYER LABEL
+    //Create Player Labels
     func createPlayerLabel(number: Int, name: String) {
         if number == 1 {
             if let _ = playerOne?.playerName {
@@ -258,10 +248,12 @@ class GameScene: SKScene {
     }
     
     
-    // TODO: update scores together
+    // Update scores together
     func updateScores() {
         socket!.on("updatePlayerOneScore") { data, ack in
             print("Player 1 updated score: \(data[0]) and previously had \(self.scoreOne), current player is \(self.currentPlayer)")
+            // TODO: Jimmy added hidden sprites
+            self.ballSprite!.hidden = true
             let playerOneLabel = self.childNodeWithName("playerOne") as! SKLabelNode
             if let playerOneName = self.playerOne?.playerName {
                 self.scoreOne = data[0] as! Int
@@ -275,6 +267,8 @@ class GameScene: SKScene {
         
         socket!.on("updatePlayerTwoScore") { data, ack in
             print("Player 2 updated score: \(data[0]) and previously had \(self.scoreTwo), current player is \(self.currentPlayer)")
+            // TODO: Jimmy added hidden sprites
+            self.ballSprite!.hidden = true
             let playerTwoLabel = self.childNodeWithName("playerTwo") as! SKLabelNode
         
             if let playerTwoName = self.playerTwo?.playerName {
@@ -287,9 +281,7 @@ class GameScene: SKScene {
         
     }
     
-    // JIMMY: Functions to add random balls
-    //  Click on the balls won't add points yet.  Simply clicking on screen will add the points.
-    // function to add random balls
+    // Functions to add random balls
     func random() -> CGFloat {
         return CGFloat(Float(arc4random()) / 0xFFFFFFFF)
     }
@@ -298,14 +290,35 @@ class GameScene: SKScene {
         return random() * (max - min) + min
     }
     
+    func createRandomBallParameters(ballIndex: Int, height: CGFloat, speed: CGFloat) {
+        
+        let ball = SKSpriteNode(imageNamed:arrayOfBalls[ballIndex])
+        ball.position = CGPoint(x: size.width + ball.size.width/2, y: height)
+        
+        // set the GLOBAL ballLocation variable
+        ballSprite = ball
+        ballLocation = ball.position
+        
+        // add ball to scene
+        addChild(ball)
+        
+        // create the actions of the ball
+        let actionMove = SKAction.moveTo(CGPoint(x: -ball.size.width/2, y: height), duration: NSTimeInterval(speed))
+        let actionMoveDone = SKAction.removeFromParent()
+        ball.runAction(SKAction.sequence([actionMove, actionMoveDone]))
+        
+        
+    }
+    
+    
     func addSportsBall() {
         
         // create a random ball
-        let arrayOfBalls: Array = ["baseball", "basketball", "puck", "tennisball", "golfball", "football"]
         
-        let rand = Int(arc4random_uniform(6))
         
-        let ball = SKSpriteNode(imageNamed:arrayOfBalls[rand])
+        let ballIndex = Int(arc4random_uniform(6))
+        
+        let ball = SKSpriteNode(imageNamed:arrayOfBalls[ballIndex])
         
         // determine where to spawn ball along Y-axis
         let actualY = random(min: ball.size.height/2, max: size.height - ball.size.height/2)
@@ -323,13 +336,16 @@ class GameScene: SKScene {
         // determine speed of the ball
         let actualDuration = random(min: CGFloat(2.0), max: CGFloat(4.0))
         
+        //TODO: Filza - emitting ball details to sync
+        socket?.emit("ballCreated", [ballIndex, actualY, actualDuration])
+        
         // create the actions of the ball
         let actionMove = SKAction.moveTo(CGPoint(x: -ball.size.width/2, y: actualY), duration: NSTimeInterval(actualDuration))
         let actionMoveDone = SKAction.removeFromParent()
         ball.runAction(SKAction.sequence([actionMove, actionMoveDone]))
     }
     
-    // TODO: Jimmy Added Initate Game
+    // TODO: Initate Game
     func initiateGame() {
         print("game is starting NOW!")
         // run code that sends out the balls in 4 second intervals
@@ -344,22 +360,24 @@ class GameScene: SKScene {
     
     // TODO: Player Pressed Ball Function
     func playerPressedBall() {
-        // TODO: Updated scoring logic
-        // JIMMY: Checking to see if player's Y-axis location is the same as the ball's y-axis location
-        // NOT YET WORKING ON INDIVIDUAL BALLS
+        // Checking to see if player's Y-axis location is the same as the ball's y-axis location
         
         let playerPressedLocation = Int(playerLocation!.y)
-        let maxBallLocation = Int(ballLocation!.y) + 10
-        let minBallLocation = Int(ballLocation!.y) - 10
+        let maxBallLocation = Int(ballLocation!.y) + Int(ballSprite!.size.height / 2)
+        let minBallLocation = Int(ballLocation!.y) - Int(ballSprite!.size.height / 2)
+        
+//        let maxBallLocation = Int(ballLocation!.y) + 10
+//        let minBallLocation = Int(ballLocation!.y) - 10
         
         
         if playerPressedLocation <= maxBallLocation && playerPressedLocation >= minBallLocation {
             // TODO: ADDED BALL SPRITE TO HIDE
             ballSprite?.hidden = true
+            print("Ball being hit", currentPlayer, "Ball Sprite name: \(ballSprite!.name)")
+            socket?.emit("ballHit")
             
             
-            
-            // CHECK FOR CURRENT PLAYER
+            // Check for current player to update scores later
             print("currentPlayer: ", currentPlayer)
             if currentPlayer == playerOne?.playerName {
                 playerOneScored = true
@@ -369,5 +387,7 @@ class GameScene: SKScene {
             
             
         }
+        
+        
     }
 }
