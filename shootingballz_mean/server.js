@@ -68,7 +68,7 @@ io.sockets.on('connection', function (socket) {
 
     socket.on("ballHit", function() {
         console.log("ball hit");
-        socket.broadcast.emit("hideBall");
+        io.sockets.emit("hideBall");
 
     });
 

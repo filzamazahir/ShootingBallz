@@ -35,6 +35,10 @@ class GameScene: SKScene {
     
     override func didMoveToView(view: SKView) {
         /* Setup your scene here */
+        
+//        let bgImage = SKSpriteNode(imageNamed: "baseball_bkg")
+//        bgImage.position = CGPointMake(self.size.width/2, self.size.height/2)
+        
 
         let myLabel = SKLabelNode(fontNamed:"Chalkduster")
         myLabel.text = "Shooting Ballz"
@@ -46,7 +50,7 @@ class GameScene: SKScene {
         startGameLabel!.fontSize = 40
         startGameLabel!.position = CGPoint(x:CGRectGetMidX(self.frame), y:CGRectGetMidY(self.frame))
         
-        socket = SocketIOClient(socketURL: "http://192.168.1.42:5000")
+        socket = SocketIOClient(socketURL: "http://192.168.1.59:5000")
         // Filza 192.168.1.42
         // Jimmy 192.168.1.59
         socket?.connect()
@@ -81,6 +85,8 @@ class GameScene: SKScene {
             
             
         }
+        
+        //self.addChild(bgImage)
         self.addChild(myLabel)
         self.addChild(startGameLabel!)
     }
@@ -93,7 +99,6 @@ class GameScene: SKScene {
         
         for touch in touches {
             
-            // TODO: INITIATE THE GAME ON THE FIRST TOUCH AND HIDE START GAME LABEL
             if gameStart == 0 {
                 if initiatedOnce == false {
                     initiateGame()
@@ -171,7 +176,7 @@ class GameScene: SKScene {
             }
         }
         
-        //TODO: Listen to updateBalls socket
+        //TODO: BUGGGGGGGGGGG
         //Listen to this in intervals..otherwise it hears one socket over 100 times
         if self.ballCreated == false {
             socket?.on("updateBalls") { data, ack in
@@ -243,8 +248,6 @@ class GameScene: SKScene {
         }
         
         
-        
-        
     }
     
     
@@ -252,7 +255,7 @@ class GameScene: SKScene {
     func updateScores() {
         socket!.on("updatePlayerOneScore") { data, ack in
             print("Player 1 updated score: \(data[0]) and previously had \(self.scoreOne), current player is \(self.currentPlayer)")
-            // TODO: Jimmy added hidden sprites
+            
             self.ballSprite!.hidden = true
             let playerOneLabel = self.childNodeWithName("playerOne") as! SKLabelNode
             if let playerOneName = self.playerOne?.playerName {
@@ -261,13 +264,16 @@ class GameScene: SKScene {
                 playerOneLabel.text = String(format: "\(playerOneName): %04u", self.scoreOne)
             }
         }
-    
-    
+        
+        // EXTRA Socket Listener -- Make changes later
+//        socket!.on("hideBall") { data, ack in
+//            self.ballSprite!.hidden = true
+//        }
 
         
         socket!.on("updatePlayerTwoScore") { data, ack in
             print("Player 2 updated score: \(data[0]) and previously had \(self.scoreTwo), current player is \(self.currentPlayer)")
-            // TODO: Jimmy added hidden sprites
+            
             self.ballSprite!.hidden = true
             let playerTwoLabel = self.childNodeWithName("playerTwo") as! SKLabelNode
         
@@ -336,7 +342,7 @@ class GameScene: SKScene {
         // determine speed of the ball
         let actualDuration = random(min: CGFloat(2.0), max: CGFloat(4.0))
         
-        //TODO: Filza - emitting ball details to sync
+        //Filza - emitting ball details to sync
         socket?.emit("ballCreated", [ballIndex, actualY, actualDuration])
         
         // create the actions of the ball
@@ -345,7 +351,7 @@ class GameScene: SKScene {
         ball.runAction(SKAction.sequence([actionMove, actionMoveDone]))
     }
     
-    // TODO: Initate Game
+    // Initate Game
     func initiateGame() {
         print("game is starting NOW!")
         // run code that sends out the balls in 4 second intervals
@@ -358,7 +364,7 @@ class GameScene: SKScene {
 
     }
     
-    // TODO: Player Pressed Ball Function
+    // Player Pressed Ball Function
     func playerPressedBall() {
         // Checking to see if player's Y-axis location is the same as the ball's y-axis location
         
@@ -371,7 +377,7 @@ class GameScene: SKScene {
         
         
         if playerPressedLocation <= maxBallLocation && playerPressedLocation >= minBallLocation {
-            // TODO: ADDED BALL SPRITE TO HIDE
+            // ADDED BALL SPRITE TO HIDE
             ballSprite?.hidden = true
             print("Ball being hit", currentPlayer, "Ball Sprite name: \(ballSprite!.name)")
             socket?.emit("ballHit")

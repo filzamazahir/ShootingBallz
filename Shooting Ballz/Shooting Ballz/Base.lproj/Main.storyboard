@@ -19,7 +19,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Your Name" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Agc-AD-d1p">
-                                <rect key="frame" x="258" y="248" width="84" height="21"/>
+                                <rect key="frame" x="258" y="248" width="84" height="20.5"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                 <nil key="highlightedColor"/>
@@ -30,19 +30,27 @@
                                 <textInputTraits key="textInputTraits"/>
                             </textField>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="3pl-NM-UvG">
-                                <rect key="frame" x="261" y="20" width="78" height="30"/>
+                                <rect key="frame" x="261" y="323" width="78" height="30"/>
                                 <state key="normal" title="Start Game"/>
                                 <connections>
                                     <action selector="startGameButtonPressed:" destination="gpa-AW-dG7" eventType="touchUpInside" id="rsq-fa-nT8"/>
                                     <segue destination="BV1-FR-VrT" kind="show" identifier="StartGame" id="fmT-Hz-E4U"/>
                                 </connections>
                             </button>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Shooting Ballz" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="JDh-4a-uoA">
+                                <rect key="frame" x="175" y="40" width="251.5" height="48"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="40"/>
+                                <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                                <nil key="highlightedColor"/>
+                            </label>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
-                            <constraint firstItem="3pl-NM-UvG" firstAttribute="top" secondItem="lki-4Q-yhA" secondAttribute="bottom" id="26V-hM-JWP"/>
+                            <constraint firstItem="JDh-4a-uoA" firstAttribute="centerX" secondItem="Im6-t5-G2K" secondAttribute="centerX" id="8GJ-4h-pSC"/>
                             <constraint firstItem="zZA-4x-TlC" firstAttribute="top" secondItem="Agc-AD-d1p" secondAttribute="bottom" constant="16" id="HJs-io-hb2"/>
+                            <constraint firstItem="3pl-NM-UvG" firstAttribute="top" secondItem="zZA-4x-TlC" secondAttribute="bottom" constant="8" id="JhJ-gj-Olh"/>
                             <constraint firstItem="3pl-NM-UvG" firstAttribute="centerX" secondItem="Im6-t5-G2K" secondAttribute="centerX" id="Md8-AQ-Dlt"/>
+                            <constraint firstItem="JDh-4a-uoA" firstAttribute="top" secondItem="lki-4Q-yhA" secondAttribute="bottom" constant="20" id="PdH-mG-1Wk"/>
                             <constraint firstAttribute="trailingMargin" secondItem="zZA-4x-TlC" secondAttribute="trailing" constant="16" id="b6k-Da-x2Z"/>
                             <constraint firstItem="zZA-4x-TlC" firstAttribute="centerX" secondItem="Im6-t5-G2K" secondAttribute="centerX" id="eGo-J2-V1a"/>
                             <constraint firstItem="Agc-AD-d1p" firstAttribute="centerX" secondItem="Im6-t5-G2K" secondAttribute="centerX" id="pGA-9Z-GsJ"/>
